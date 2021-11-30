@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirestore, doc, setDoc, getDoc, addDoc, collection, getDocs, query,where } from "firebase/firestore";
 
+
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyCDfv_r0clsKGYZdt6738LJIqSRAtcj9OA",
     authDomain: "team-reporter-app-12d97.firebaseapp.com",
@@ -12,7 +13,7 @@ const firebaseApp = initializeApp({
 });
 
 const auth = getAuth();
-const db = getFirestore();
+const db = getFirestore(firebaseApp);
 
 export {
     auth,

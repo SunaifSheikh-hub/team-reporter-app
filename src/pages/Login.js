@@ -5,7 +5,7 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './login.css'
 import { Link } from 'react-router-dom';
-import { auth, signInWithEmailAndPassword, onAuthStateChanged } from "../routes/Firebase";
+import { auth, signInWithEmailAndPassword, onAuthStateChanged, db } from "../routes/Firebase";
 
 const Login = () => {
   // const loginHandler = () => {
@@ -32,6 +32,7 @@ const Login = () => {
          console.log(error);
       });
     };
+    
       useEffect(()=>{
         onAuthStateChanged(auth, (user) => {
           if (user) {
@@ -39,7 +40,7 @@ const Login = () => {
             // https://firebase.google.com/docs/reference/js/firebase.User
             const uid = user.uid;
             console.log(user.uid)
-            
+           
             // ...
           } else {
             // User is signed out
