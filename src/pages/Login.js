@@ -22,7 +22,7 @@ const Login = () => {
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
-        console.log(user)
+        console.log(user.email,user.password)
         navigate('/home')
         // ...
       })
@@ -39,7 +39,9 @@ const Login = () => {
             // User is signed in, see docs for a list of available properties
             // https://firebase.google.com/docs/reference/js/firebase.User
             const uid = user.uid;
-            console.log(user.uid)
+            const lastLoggedin=new Date();
+            user.lastLoggedin=lastLoggedin;
+            console.log(user.uid,user.lastLoggedin);
            
             // ...
           } else {

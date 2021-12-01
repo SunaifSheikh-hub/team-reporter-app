@@ -1,7 +1,7 @@
 import {Modal,Form, Button,Select } from 'antd';
 import React, { useState,useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { auth, signOut,db,collection,onAuthStateChanged,getDocs,addDoc } from "../routes/Firebase";
+import { auth,signOut,db,collection,onAuthStateChanged,getDocs,addDoc,query, where } from "../routes/Firebase";
 import { useNavigate } from 'react-router-dom'
 const Home = () => {
     let navigate = useNavigate()
@@ -16,7 +16,12 @@ const Home = () => {
     }
     let team = {name:'',
   timings:'',
- userUid: ''};
+ userid: ''};
+
+ let loginUser={
+   email:'',
+   lastLogin:''
+ }
     const [isModalVisible, setIsModalVisible] = useState(false);
     function handleChangefield(value) {
       console.log(`selected ${value}`);
@@ -26,7 +31,37 @@ const Home = () => {
       console.log('Selected Timings',value);
       team.timings=value
     }
-  
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+      team.userid= user.email;
+      loginUser.email=user.email;
+      loginUser.lastLogin=user.lastLoggedin;
+
+        // ...
+      } else {
+        // User is signed out
+        // ...
+        console.log("no user has logged in")
+      }
+    });
+    const [myteams, setMyTeams] = useState([]);
+    useEffect(async () => {
+     
+
+      let team = collection(db, 'teams');
+      let q = query(team, where("userid", "==", loginUser.email))
+      let allteams = await getDocs(q);
+      let myTeamsClone = myteams.slice(0);
+      allteams.forEach((doc) => {
+        console.log(doc.id, doc.data());
+        myTeamsClone.push(doc.data());
+    });
+    setMyTeams(myTeamsClone);
+     console.log(myteams)
+  }, []) 
+ 
     const addTeam = async () => {
       console.log(team);
       let teamRef = collection(db, 'teams');
@@ -44,9 +79,7 @@ const Home = () => {
     const handleCancel = () => {
       setIsModalVisible(false);
     };
-const createTeam=()=>{
-  alert('team Created')
-}
+    
     return (
         <div>
             <h1>This is Home Page</h1>
@@ -59,7 +92,7 @@ const createTeam=()=>{
       </Button>
       <Modal title="Basic Modal"
        visible={isModalVisible} 
-      onOk={handleOk} onCancel={handleCancel} onChange={createTeam}
+      onOk={handleOk} onCancel={handleCancel} 
       >
       
 
@@ -96,7 +129,9 @@ const createTeam=()=>{
       </Modal>
         </div>
             <Button onClick={SignOut}>Logout</Button>
+
         </div>
+        
     );
 }
 
