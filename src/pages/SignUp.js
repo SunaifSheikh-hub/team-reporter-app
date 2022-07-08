@@ -1,23 +1,33 @@
-import React from 'react'
+import React, { useContext, useState } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import './login.css'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import { auth, createUserWithEmailAndPassword, db, setDoc, doc } from '../routes/Firebase';
+
+
 let userDetails={};
 const Signup = () => {
+        let email='';
+          let password='';
     const onFinish = (values) => {
         console.log('Success:', values);
-      userDetails=values;
+        userDetails=values;
+        email=userDetails.email;
+        password=userDetails.password;
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log(user);
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // ..
+          });
       console.log('User Details',userDetails)
-      let merge=undefined;
-        const preRecord=JSON.parse(localStorage.getItem('key'));
-        console.log(preRecord);
-        if (preRecord===null){
-            merge=[userDetails] 
-        }else{
-        merge=[...preRecord,userDetails]};
-        localStorage.setItem('key',JSON.stringify(merge));
-        
-      };
+        }
       const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
       };
